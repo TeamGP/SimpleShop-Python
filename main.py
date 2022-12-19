@@ -15,6 +15,18 @@ users_list = {
     "parsa1":{"name":"Parsa", "pass":"1234"}
 }
 
+def print_prd(num):
+    for i in len(prd_list):
+        name = i['name']
+        price = str(i['price'])
+        desc = i['description']
+        sell_count = i['sell_count']
+        seller = i['seller']
+
+        print(f"""
+        {name} 
+        """)
+
 if len(prd_list) < 10:
     print(prd_list)
 else:
