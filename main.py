@@ -1,5 +1,7 @@
 import base64
 
+#amogos
+
 def enc_b64(text):
     t_bytes = text.encode('ascii')
     b64_bytes = base64.b64encode(t_bytes)
