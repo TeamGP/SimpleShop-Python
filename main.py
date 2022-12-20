@@ -24,7 +24,9 @@ def print_prd(num):
         seller = i['seller']
 
         print(f"""
-        {name} 
+        {name} | bought {sell_count} times | {price}$
+        {desc}
+        {seller}
         """)
 
 if len(prd_list) < 10:
