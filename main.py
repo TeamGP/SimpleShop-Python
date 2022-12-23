@@ -1,6 +1,7 @@
 """ Simple Shop """
 import base64
 import binascii
+import db
 from ast import literal_eval
 
 # Default vars
@@ -42,11 +43,10 @@ def write_file(path, text):
     with open(path, 'w', encoding='utf8') as file:
         return file.write(text)
 
-def appdata_write(key, value):
+def appdata_iskeyexist(key):
     file = read_file(appdata_path)
     data:dict = literal_eval(dec(file))
-    data[key] = value
-    write_file(appdata_path, str(enc(str(data)))[2:-1])
+    return not data.get(key, False) == False
 
 def appdata_write(key, value):
     file = read_file(appdata_path)
@@ -54,7 +54,7 @@ def appdata_write(key, value):
     data[key] = value
     write_file(appdata_path, str(enc(str(data)))[2:-1])
 
-def appdata_del(key):
+def appdata_rem(key):
     file = read_file(appdata_path)
     data:dict = literal_eval(dec(file))
     data.pop(key)
@@ -89,8 +89,11 @@ def print_prd(num):
     print('='*10)
 
 # Actual program
-print_prd(1)
-if appdata_read('name')
-appdata_write('name', 'parsa')
-print()
-appdata_del('name')
+# 6533303d
+if __name__ == '__main__':
+    if db.read('users'):
+        print(f'Hello, {appdata_read("name")}!')
+    else:
+        appdata_write('name', input('What\'s your name? '))
+    print('Welcome!')
+    print_prd(1)
