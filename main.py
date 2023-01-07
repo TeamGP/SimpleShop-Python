@@ -1,8 +1,8 @@
 """ Simple Shop """
 import base64
 import binascii
-import db
 from ast import literal_eval
+import db
 
 # Default vars
 appdata_path = 'data.appdata'
@@ -91,7 +91,7 @@ def print_prd(num):
 # Actual program
 # 6533303d
 if __name__ == '__main__':
-    if db.read('users'):
+    if appdata_iskeyexist('name'):
         print(f'Hello, {appdata_read("name")}!')
     else:
         appdata_write('name', input('What\'s your name? '))

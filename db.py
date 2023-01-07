@@ -3,7 +3,7 @@ import base64
 import binascii
 from ast import literal_eval
 
-db_path = 'db'
+db_path = 'db/db'
 
 def enc(text):
     """ Encode the given text to base64 """
@@ -48,6 +48,7 @@ def rem(key):
 def read(key):
     data = literal_eval(dec(read_file(db_path)))
     write_file(db_path, str(enc(str(data)))[2:-1])
+    print(data)
     return data[key]
 
 def iskeyindict(dic, key):
