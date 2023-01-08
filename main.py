@@ -1,6 +1,7 @@
 """ Simple Shop """
 import base64
 import binascii
+import sys
 from ast import literal_eval
 import border as b
 import db
@@ -52,29 +53,30 @@ def write_file(path:str, text:str) -> int:
         return file.write(text)
 
 def appdata_iskeyexist(key:str) -> bool:
+    """ Check if key is in appdata """
     file = read_file(appdata_path)
     data:dict = literal_eval(dec(file))
-    return not data.get(key, False) == False
+    return key in data.keys()
 
 def appdata_write(key:str, value:str) -> None:
+    """ Write value from appdata """
     file = read_file(appdata_path)
     data:dict = literal_eval(dec(file))
     data[key] = value
     write_file(appdata_path, str(enc(str(data)))[2:-1])
 
 def appdata_rem(key:str) -> None:
+    """ Remove value from appdata """
     file = read_file(appdata_path)
     data:dict = literal_eval(dec(file))
     data.pop(key)
     write_file(appdata_path, str(enc(str(data)))[2:-1])
 
 def appdata_read(key:str) -> str:
+    """ Read value from appdata """
     data = literal_eval(dec(read_file(appdata_path)))
     write_file(appdata_path, str(enc(str(data)))[2:-1])
     return data[key]
-
-def iskeyindict(dic:dict, key:str) -> bool:
-    return key in dic.keys()
 
 def print_prd(num:int=1, sort:str="", reversed_sort:bool=False) -> str:
     """ prints the products list """
@@ -98,7 +100,7 @@ def print_prd(num:int=1, sort:str="", reversed_sort:bool=False) -> str:
     else:
         prdlst_cut = prdlist[num*5-5:num*5]
 
-    o:str=''
+    output:str=''
     longstrlen:int = 0
     for l in prdlst_cut:
         name:str = l['name']
@@ -110,12 +112,12 @@ def print_prd(num:int=1, sort:str="", reversed_sort:bool=False) -> str:
     for j in prdlst_cut:
         name:str = j['name']
         price:str = str(j['price'])
-        pid:str = prd_list.index(j)
+        prid:str = prd_list.index(j)
         namelen = longstrlen - len(f"{name} {price}") - 2
-        o+=f"\n{b.ud} {pid} {b.ud} {name} {price}T{' '*namelen}{b.ud}\n{b.udr}{b.lr*(len(str(pid))+2)}{b.udlr}{b.lr*longstrlen}{b.udl}"
-    cutlen = -(len(str(pid)) + longstrlen+5)
-    o=o[:cutlen]
-    print(f"{b.dr}{b.lr*(len(str(pid))+2)}{b.dlr}{b.lr*longstrlen}{b.dl}\n"+o.strip()+f"\n{b.ur}{b.lr*(len(str(pid))+2)}{b.ulr}{b.lr*longstrlen}{b.ul}")
+        output+=f"\n{b.ud} {prid} {b.ud} {name} {price}T{' '*namelen}{b.ud}\n{b.udr}{b.lr*(len(str(prid))+2)}{b.udlr}{b.lr*longstrlen}{b.udl}"
+    cutlen = -(len(str(prid)) + longstrlen+5)
+    output=output[:cutlen]
+    print(f"{b.dr}{b.lr*(len(str(prid))+2)}{b.dlr}{b.lr*longstrlen}{b.dl}\n"+output.strip()+f"\n{b.ur}{b.lr*(len(str(prid))+2)}{b.ulr}{b.lr*longstrlen}{b.ul}")
 
 # Actual program
 # 6533303d
@@ -136,9 +138,7 @@ if __name__ == '__main__':
                         appdata_write('username', lu)
                         appdata_write("buylist", [])
                         break
-
-                    else:
-                        print(f'{b.ur} The Password is incorrect.')
+                    print(f'{b.ur} The Password is incorrect.')
                 else:
                     print(f'{b.ur} The Username is incorrect.')
             elif inpl == 's':
@@ -154,15 +154,14 @@ if __name__ == '__main__':
                         appdata_write('username', su)
                         appdata_write("buylist", [])
                         break
-                    else:
-                        print(f'{b.ur} The username is already taken.')
+                    print(f'{b.ur} The username is already taken.')
                 else:
                     print(f'{b.ur} The passwords is not the same.')
             elif inpl == 'debug':
                 print(literal_eval(dec(read_file(db.db_path))))
 
             elif inpl == 'e':
-                exit()
+                sys.exit()
 
     print('Welcome!')
     print_prd(1)
@@ -240,7 +239,7 @@ if __name__ == '__main__':
         elif c1 == "logout":
             appdata_rem("name")
             appdata_rem("buylist")
-            exit()
+            sys.exit()
 
         elif c1 == "delacc":
             if input("Are you sure about that? (y, n)").lower() == 'y':
@@ -248,10 +247,10 @@ if __name__ == '__main__':
                 appdata_rem("name")
                 appdata_rem("username")
                 appdata_rem("buylist")
-                exit()
+                sys.exit()
 
         elif c1 == "exit":
-            exit()
+            sys.exit()
 
         elif c1 == "helpme":
             print(f'''
