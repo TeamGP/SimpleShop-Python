@@ -9,13 +9,12 @@ import db
 # Default vars
 appdata_path:str = 'data.appdata'
 
-
 prd_list:list = [
     {"name":"sib", "price":28_000, "description":"A delicious fruit", "sell_count":9, "seller":"Mive va tarebar e Avang"},
     {"name":"medad", "price":4_000, "description":"Pencil.", "sell_count":7, "seller":"Lavazem tahrir e mamad"},
     {"name":"gheychi", "price":200_000, "description":"scissors!", "sell_count":16, "seller":"Bahman chaman zan"},
     {"name":"mug", "price":59_000, "description":"livan but MOHKAM", "sell_count":3, "seller":"zarf & zorofe mamadi"},
-    {"name":"chips (serke namaki)", "price":9_600, "description":"chips chasp SOS", "sell_count":46, "seller":"Super market Arshia"},
+    {"name":"chips (chili)", "price":9_600, "description":"chips chasp SOS", "sell_count":46, "seller":"Super market Arshia"},
     {"name":"pofak", "price":13_500, "description":"polimere to por", "sell_count":38, "seller":"Super market Arshia"},
     {"name":"mohz", "price":44_200, "description":"khiyare zard", "sell_count":8, "seller":"Mive va tarebar e Avang"},
     {"name":"rob e anar", "price":159_000, "description":"Torshak level 2", "sell_count":13, "seller":"Mive va tarebar e Avang"},
@@ -78,22 +77,20 @@ def appdata_read(key:str) -> str:
     write_file(appdata_path, str(enc(str(data)))[2:-1])
     return data[key]
 
-def print_prd(num:int=1, sort:str="", reversed_sort:bool=False) -> str:
+def print_prd(num:int=1, sort:str="", rev_sort:bool=False) -> str:
     """ prints the products list """
     if sort == "":
+        prdlist = prd_list[:]
+    else:
         if sort == "name":
-            prdlist = sorted(prd_list, key="name", reverse=reversed_sort)
+            prdlist = sorted(prd_list, key=lambda d: d['name'], reverse=rev_sort) 
 
-        if sort == "price":
-            prdlist = sorted(prd_list, key="price", reverse=reversed_sort)
+        elif sort == "price":
+            prdlist = sorted(prd_list, key=lambda d: d['price'], reverse=rev_sort) 
 
-        if sort == "sell_count":
-            prdlist = sorted(prd_list, key="sell_count", reverse=reversed_sort)
-
-        if sort == "seller":
-            prdlist = sorted(prd_list, key="seller", reverse=reversed_sort)
-        else:
-            prdlist = prd_list[:]
+        elif sort == "sell count":
+            prdlist = sorted(prd_list, key=lambda d: d['sell_count'], reverse=rev_sort) 
+        
 
     if len(prd_list) < 5:
         prdlst_cut = prdlist[:]
@@ -102,11 +99,14 @@ def print_prd(num:int=1, sort:str="", reversed_sort:bool=False) -> str:
 
     output:str=''
     longstrlen:int = 0
+    longnumlen:int = 0
     for l in prdlst_cut:
         name:str = l['name']
         price:str = str(l['price'])
         if len(f"{name} {price}T") > longstrlen:
             longstrlen = len(f"{name} {price}T")
+        if len(str(prd_list.index(l))) > longnumlen:
+            longnumlen = len(str(prd_list.index(l)))
     longstrlen+=2
 
     for j in prdlst_cut:
@@ -114,10 +114,10 @@ def print_prd(num:int=1, sort:str="", reversed_sort:bool=False) -> str:
         price:str = str(j['price'])
         prid:str = prd_list.index(j)
         namelen = longstrlen - len(f"{name} {price}") - 2
-        output+=f"\n{b.ud} {prid} {b.ud} {name} {price}T{' '*namelen}{b.ud}\n{b.udr}{b.lr*(len(str(prid))+2)}{b.udlr}{b.lr*longstrlen}{b.udl}"
-    cutlen = -(len(str(prid)) + longstrlen+5)
+        output+=f"\n{b.ud} {prid}{' '*(longnumlen+1-len(str(prid)))}{b.ud} {name} {price}T{' '*namelen}{b.ud}\n{b.udr}{b.lr*(longnumlen+2)}{b.udlr}{b.lr*longstrlen}{b.udl}"
+    cutlen = -(len(str(prid)) + longstrlen+6)
     output=output[:cutlen]
-    print(f"{b.dr}{b.lr*(len(str(prid))+2)}{b.dlr}{b.lr*longstrlen}{b.dl}\n"+output.strip()+f"\n{b.ur}{b.lr*(len(str(prid))+2)}{b.ulr}{b.lr*longstrlen}{b.ul}")
+    print(f"{b.dr}{b.lr*(len(str(prid))+longnumlen+1)}{b.dlr}{b.lr*longstrlen}{b.dl}\n"+output.strip()+f"\n{b.ur}{b.lr*(len(str(prid))+longnumlen+1)}{b.ulr}{b.lr*longstrlen}{b.ul}")
 
 # Actual program
 # 6533303d
@@ -218,7 +218,13 @@ if __name__ == '__main__':
 
         elif c1[:4] == 'sort':
             if len(c1)>4:
-                print_prd(int(c1[5:]), c1[5:])
+                args = c1.split()
+                if len(args) == 2:
+                    print_prd(1, args[1])
+                elif len(args) == 3:
+                    print_prd(1, args[1], bool(args[2]))
+                else:
+                    print("Wrong arg. Try again.")
             else:
                 print("Please put the page number.")
 
@@ -257,7 +263,7 @@ if __name__ == '__main__':
 {b.dr} command (required) [additional]
 {b.ud} 
 {b.ud} Command         {b.ud} Description
-{b.udl}{b.lr*17}{b.udlr}{b.lr*48}
+{b.udr}{b.lr*17}{b.udlr}{b.lr*48}
 {b.ud} add (prod id)   {b.ud} Add a product to Buy list.
 {b.ud} list            {b.ud} Show the Buy list.
 {b.ud} info (prod id)  {b.ud} Show more detail about given product.
