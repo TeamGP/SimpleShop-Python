@@ -82,13 +82,10 @@ def print_prd(num:int=1, sort:str="", rev_sort:bool=False) -> str:
     if sort == "":
         prdlist = prd_list[:]
     else:
-        if sort == "name":
-            prdlist = sorted(prd_list, key=lambda d: d['name'], reverse=rev_sort) 
-
-        elif sort == "price":
+        if sort == "price":
             prdlist = sorted(prd_list, key=lambda d: d['price'], reverse=rev_sort) 
 
-        elif sort == "sell count":
+        elif sort in("sell count", "sellcount"):
             prdlist = sorted(prd_list, key=lambda d: d['sell_count'], reverse=rev_sort) 
         
 
@@ -103,8 +100,10 @@ def print_prd(num:int=1, sort:str="", rev_sort:bool=False) -> str:
     for l in prdlst_cut:
         name:str = l['name']
         price:str = str(l['price'])
-        if len(f"{name} {price}T") > longstrlen:
-            longstrlen = len(f"{name} {price}T")
+        sellcount:str = str(l['sell_count'])
+        label = f"{name} {price}T {sellcount}"
+        if len(label) > longstrlen:
+            longstrlen = len(label)
         if len(str(prd_list.index(l))) > longnumlen:
             longnumlen = len(str(prd_list.index(l)))
     longstrlen+=2
@@ -113,8 +112,9 @@ def print_prd(num:int=1, sort:str="", rev_sort:bool=False) -> str:
         name:str = j['name']
         price:str = str(j['price'])
         prid:str = prd_list.index(j)
-        namelen = longstrlen - len(f"{name} {price}") - 2
-        output+=f"\n{b.ud} {prid}{' '*(longnumlen+1-len(str(prid)))}{b.ud} {name} {price}T{' '*namelen}{b.ud}\n{b.udr}{b.lr*(longnumlen+2)}{b.udlr}{b.lr*longstrlen}{b.udl}"
+        label = f"{name} {price}T {sellcount}"
+        namelen = longstrlen - len(label) - 2
+        output+=f"\n{b.ud} {prid}{' '*(longnumlen+1-len(str(prid)))}{b.ud} {label} {' '*namelen}{b.ud}\n{b.udr}{b.lr*(longnumlen+2)}{b.udlr}{b.lr*longstrlen}{b.udl}"
     cutlen = -(len(str(prid)) + longstrlen+6)
     output=output[:cutlen]
     print(f"{b.dr}{b.lr*(len(str(prid))+longnumlen+1)}{b.dlr}{b.lr*longstrlen}{b.dl}\n"+output.strip()+f"\n{b.ur}{b.lr*(len(str(prid))+longnumlen+1)}{b.ulr}{b.lr*longstrlen}{b.ul}")
@@ -222,7 +222,12 @@ if __name__ == '__main__':
                 if len(args) == 2:
                     print_prd(1, args[1])
                 elif len(args) == 3:
-                    print_prd(1, args[1], bool(args[2]))
+                    if args[2] == 'asc':
+                        print_prd(1, args[1], False)
+                    elif args[2] == 'des':
+                        print_prd(1, args[1], True)
+                    else:
+                        print_prd(1, args[1], bool(args[2]))
                 else:
                     print("Wrong arg. Try again.")
             else:
@@ -262,14 +267,16 @@ if __name__ == '__main__':
             print(f'''
 {b.dr} command (required) [additional]
 {b.ud} 
-{b.ud} Command         {b.ud} Description
-{b.udr}{b.lr*17}{b.udlr}{b.lr*48}
-{b.ud} add (prod id)   {b.ud} Add a product to Buy list.
-{b.ud} list            {b.ud} Show the Buy list.
-{b.ud} info (prod id)  {b.ud} Show more detail about given product.
-{b.ud} page (page num) {b.ud} Scrolling through the list of products.
-{b.ud} remove (prodid) {b.ud} Remove a product from Buy list.
-{b.ud} logout          {b.ud} Logout from System.
-{b.ud} delacc          {b.ud} Delete the Account from System.
-{b.ud} exit            {b.ud} Exit from app.
-{b.ur} helpme          {b.ud} Show this thing.'''.strip())
+{b.ud} Command            {b.ud} Description
+{b.udr}{b.lr*20}{b.udlr}{b.lr*45}
+{b.ud} info (prod id)     {b.ud} Show more detail about given product.
+{b.ud} page (page num)    {b.ud} Scrolling through the list of products.
+{b.ud} sort (q) [asc/des] {b.ud} Sort the product list. q=price / sellcount
+{b.ud} add (prod id)      {b.ud} Add a product to Buy list.
+{b.ud} remove (prodid)    {b.ud} Remove a product from Buy list.
+{b.ud} list               {b.ud} Show the Buy list.
+{b.ud} logout             {b.ud} Logout from System.
+{b.ud} delacc             {b.ud} Delete the Account from System.
+{b.ud} exit               {b.ud} Exit from app.
+{b.ur} helpme             {b.ud} Show this thing.
+'''.strip())
