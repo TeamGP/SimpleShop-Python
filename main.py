@@ -7,17 +7,12 @@ import db
 # Default vars
 appdata_path = 'data.appdata'
 
-prd_list = [
+prd_list:list = [
     {"name":"sib", "price":12_000, "description":"A delicious fruit", "sell_count":9, "seller":"Mive va tarebar e Avang"},
     {"name":"medad", "price":9_000, "description":"Pencil.", "sell_count":7, "seller":"Lavazem tahrir e mamad"},
     {"name":"gheychi", "price":25_000, "description":"scissors!", "sell_count":16, "seller":"Bahman chaman zan"},
     {"name":"noshabe", "price":37_000, "description":"A delicious drink", "sell_count":4, "seller":"Super market Arshia"}
 ]
-
-users_list = {
-#   "USERNAME":{"name":"DISPLAY_NAME", "pass":"ENCRYPTED_PASSWORD"}
-    "parsa1":{"name":"Parsa", "pass":"1234"}
-}
 
 # Functions
 def enc(text):
@@ -71,29 +66,65 @@ def iskeyindict(dic, key):
 def print_prd(num):
     """ prints the products list """
     if len(prd_list) < 5:
-        prdlst_cut = prd_list
+        prdlst_cut = prd_list[:]
     else:
         prdlst_cut = prd_list[num*5-5:num*5]
 
     for i in prdlst_cut:
         name = i['name']
         price = str(i['price'])
-        desc = i['description']
-        sell_count = i['sell_count']
-        seller = i['seller']
-
-        print(f"""==========
-{name} | bought {sell_count} times | {price}$
-{desc}
-{seller}""")
+        pid = prd_list.index(i)
+        print(f"""==========\n{pid} | {name} {price}T""")
     print('='*10)
 
 # Actual program
 # 6533303d
+# {'parsa1': {'name': 'Parsa', 'pass': '1234'}}
 if __name__ == '__main__':
     if appdata_iskeyexist('name'):
         print(f'Hello, {appdata_read("name")}!')
     else:
-        appdata_write('name', input('What\'s your name? '))
+        n = input('What\'s your username? ')
+        appdata_write('name', n)
+        appdata_write("buylist", [])
     print('Welcome!')
     print_prd(1)
+    while True:
+        c1 = input("What to do? ")
+
+        if c1[:3] == 'add':
+            pid = int(c1[4:])
+            if pid < len(prd_list):
+                buylst:dict = appdata_read("buylist")
+                buylst.append(pid)
+                appdata_write("buylist", buylst)
+                pname = prd_list[pid]["name"]
+                print(f"The {pname} has successfully added.")
+            else:
+                print("Wrong Id. Try again.")
+
+        elif c1[:4] == 'list':
+            buylst = appdata_read("buylist")
+            o:str=''
+            a:str=0
+            for i in buylst:
+                o+=f"\n{i} | "+prd_list[i]["name"]
+                a+=prd_list[i]["price"]
+            print(o.strip())
+            print(f"The sum of all products: {a}")
+
+        elif c1[:6] == 'remove':
+            pid = int(c1[7:])
+            buylst:dict = appdata_read("buylist")
+            if pid in buylst:
+                buylst.remove(pid)
+                appdata_write("buylist", buylst)
+                pname = prd_list[pid]["name"]
+                print(f"The {pname} has successfully removed.")
+            else:
+                print("Wrong Id. Try again.")
+
+        elif c1 == "logout":
+            appdata_rem("name")
+            appdata_rem("buylist")
+            exit()
