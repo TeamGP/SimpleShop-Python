@@ -2,13 +2,17 @@
 import base64
 import binascii
 import sys
+from csv import DictReader
 from ast import literal_eval
 import border as b
 import db
 
 # Default vars
 appdata_path:str = 'data.appdata'
+prdata_path = 'db/products.csv'
+prd_list = [*DictReader(open(prdata_path, encoding="utf8"))]
 
+'''
 prd_list:list = [
     {"name":"sib", "price":28_000, "description":"A delicious fruit", "sell_count":9, "seller":"Mive va tarebar e Avang"},
     {"name":"medad", "price":4_000, "description":"Pencil.", "sell_count":7, "seller":"Lavazem tahrir e mamad"},
@@ -26,6 +30,7 @@ prd_list:list = [
     {"name":"estaminofen", "price":72_500, "description":"daroo", "sell_count":95, "seller":"darokhoneye kazemi"},
     {"name":"ghooti noshabe", "price":9_600, "description":"A delicious drink", "sell_count":4, "seller":"Super market Arshia"}
 ]
+'''
 
 # Functions
 def enc(text:str) -> str:
@@ -111,6 +116,7 @@ def print_prd(num:int=1, sort:str="", rev_sort:bool=False) -> str:
     for j in prdlst_cut:
         name:str = j['name']
         price:str = str(j['price'])
+        sellcount:str = str(j['sell_count'])
         prid:str = prd_list.index(j)
         label = f"{name} {price}T {sellcount}"
         namelen = longstrlen - len(label) - 2
