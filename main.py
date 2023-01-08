@@ -2,10 +2,12 @@
 import base64
 import binascii
 from ast import literal_eval
+import border
 import db
 
 # Default vars
 appdata_path = 'data.appdata'
+
 
 prd_list:list = [
     {"name":"sib", "price":12_000, "description":"A delicious fruit", "sell_count":9, "seller":"Mive va tarebar e Avang"},
@@ -84,9 +86,46 @@ if __name__ == '__main__':
     if appdata_iskeyexist('name'):
         print(f'Hello, {appdata_read("name")}!')
     else:
-        n = input('What\'s your username? ')
-        appdata_write('name', n)
-        appdata_write("buylist", [])
+        while True:
+            inpl=input(f"{border.dr} l=Login s=Signup > ").lower()
+            if inpl == "l":
+                lu = input(f'{border.ud} What\'s your username? ')
+                if db.iskeyexist(lu):
+                    lp = input(f'{border.ud} What\'s your password, {lu}? ')
+                    if db.read(lu)['pass'] == lp:
+                        print(f"{border.ur} Correct! Logging in...")
+                        appdata_write('name', db.read(lu)["name"])
+                        appdata_write('username', lu)
+                        appdata_write("buylist", [])
+                        break
+
+                    else:
+                        print(f'{border.ur} The Password is incorrect.')
+                else:
+                    print(f'{border.ur} The Username is incorrect.')
+            elif inpl == 's':
+                su = input(f'{border.ud} Type your username: ')
+                sp1 = input(f'{border.ud} Type your password: ')
+                sp2 = input(f'{border.ud} Type your password, again: ')
+                if sp1==sp2:
+                    if not db.iskeyexist(su):
+                        sn = input('{border.ud} Type your display name: ')
+                        db.write(su, {"name":sn, "pass":sp1})
+                        print(f"{border.ur} Logging in...")
+                        appdata_write('name', sn)
+                        appdata_write('username', su)
+                        appdata_write("buylist", [])
+                        break
+                    else:
+                        print(f'{border.ur} The username is already taken.')
+                else:
+                    print(f'{border.ur} The passwords is not the same.')
+            elif inpl == 'debug':
+                print(literal_eval(dec(read_file(db.db_path))))
+
+            elif inpl == 'e':
+                exit()
+
     print('Welcome!')
     print_prd(1)
     while True:
@@ -128,3 +167,29 @@ if __name__ == '__main__':
             appdata_rem("name")
             appdata_rem("buylist")
             exit()
+
+        elif c1 == "delacc":
+            if input("Are you sure about that? (y, n)").lower() == 'y':
+                db.rem(appdata_read("username"))
+                appdata_rem("name")
+                appdata_rem("username")
+                appdata_rem("buylist")
+                exit()
+
+        elif c1 == "exit":
+            exit()
+
+        elif c1 == "helpme":
+            print('''
+command (required) [additional]
+
+Command         | Description
+____________________________________________
+add (prod id)   | Add a product to Buy list
+list            | Show the Buy list
+remove (prodid) | Remove a product from Buy list
+logout          | Logout from System
+delacc          | Delete the Account from System
+exit            | Exit from app
+helpme          | Show this thing
+                '''.strip())
