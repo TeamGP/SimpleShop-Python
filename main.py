@@ -2,37 +2,26 @@
 import base64
 import binascii
 import sys
+import os
 from csv import DictReader
 from ast import literal_eval
+import requests
+import climage # pip install climage
 import border as b
 import db
-
+  
 # Default vars
 appdata_path:str = 'data.appdata'
 prdata_path = 'db/products.csv'
-prd_list = [*DictReader(open(prdata_path, encoding="utf8"))]
-
-'''
-prd_list:list = [
-    {"name":"sib", "price":28_000, "description":"A delicious fruit", "sell_count":9, "seller":"Mive va tarebar e Avang"},
-    {"name":"medad", "price":4_000, "description":"Pencil.", "sell_count":7, "seller":"Lavazem tahrir e mamad"},
-    {"name":"gheychi", "price":200_000, "description":"scissors!", "sell_count":16, "seller":"Bahman chaman zan"},
-    {"name":"mug", "price":59_000, "description":"livan but MOHKAM", "sell_count":3, "seller":"zarf & zorofe mamadi"},
-    {"name":"chips (chili)", "price":9_600, "description":"chips chasp SOS", "sell_count":46, "seller":"Super market Arshia"},
-    {"name":"pofak", "price":13_500, "description":"polimere to por", "sell_count":38, "seller":"Super market Arshia"},
-    {"name":"mohz", "price":44_200, "description":"khiyare zard", "sell_count":8, "seller":"Mive va tarebar e Avang"},
-    {"name":"rob e anar", "price":159_000, "description":"Torshak level 2", "sell_count":13, "seller":"Mive va tarebar e Avang"},
-    {"name":"narengi", "price":35_000, "description":"porteghale kochik", "sell_count":4, "seller":"Mive va tarebar e Avang"},
-    {"name":"ravan nevis", "price":16_000, "description":"Khodkar lvl 2", "sell_count":18, "seller":"lavazem tahririye yaser"},
-    {"name":"bastani arosaki", "price":7_000, "description":"hichvaght mesle coveresh nemishe :(", "sell_count":35, "seller":"Super market Arshia"},
-    {"name":"dough e ab-ali", "price":14_800, "description":"gaz dar", "sell_count":21, "seller":"Super market Arshia"},
-    {"name":"joorab", "price":29_000, "description":"pif pif!", "sell_count":62, "seller":"poshake vaziri"},
-    {"name":"estaminofen", "price":72_500, "description":"daroo", "sell_count":95, "seller":"darokhoneye kazemi"},
-    {"name":"ghooti noshabe", "price":9_600, "description":"A delicious drink", "sell_count":4, "seller":"Super market Arshia"}
-]
-'''
+with open(prdata_path, encoding="utf8") as f:
+    prd_list = [*DictReader(f)]
 
 # Functions
+def printimage(path):
+    ''' converts the image to print in terminal
+     inform of ANSI Escape codes '''
+    print(climage.convert(path, is_256color=True))
+
 def enc(text:str) -> str:
     """ Encode the given text to base64 """
     # https://www.scopulus.co.uk/tools/hexconverter.htm
@@ -82,10 +71,19 @@ def appdata_read(key:str) -> str:
     write_file(appdata_path, str(enc(str(data)))[2:-1])
     return data[key]
 
-def print_prd(num:int=1, sort:str="", rev_sort:bool=False) -> str:
+def text_formatter(digit:int) -> str:
+    """ something """
+    print(len(str(digit))//3)
+
+def print_prd(num:int=1, sort:str="", rev_sort:bool=False, count=10) -> str:
     """ prints the products list """
+    if num > (len(prd_list)//count):
+        print('The page number is too large.')
+        return
+
     if sort == "":
         prdlist = prd_list[:]
+
     else:
         if sort == "price":
             prdlist = sorted(prd_list, key=lambda d: d['price'], reverse=rev_sort) 
@@ -94,10 +92,10 @@ def print_prd(num:int=1, sort:str="", rev_sort:bool=False) -> str:
             prdlist = sorted(prd_list, key=lambda d: d['sell_count'], reverse=rev_sort) 
         
 
-    if len(prd_list) < 5:
+    if len(prd_list) < count:
         prdlst_cut = prdlist[:]
     else:
-        prdlst_cut = prdlist[num*5-5:num*5]
+        prdlst_cut = prdlist[num*count-count:num*count]
 
     output:str=''
     longstrlen:int = 0
@@ -123,12 +121,13 @@ def print_prd(num:int=1, sort:str="", rev_sort:bool=False) -> str:
         output+=f"\n{b.ud} {prid}{' '*(longnumlen+1-len(str(prid)))}{b.ud} {label} {' '*namelen}{b.ud}\n{b.udr}{b.lr*(longnumlen+2)}{b.udlr}{b.lr*longstrlen}{b.udl}"
     cutlen = -(len(str(prid)) + longstrlen+6)
     output=output[:cutlen]
-    print(f"{b.dr}{b.lr*(len(str(prid))+longnumlen+1)}{b.dlr}{b.lr*longstrlen}{b.dl}\n"+output.strip()+f"\n{b.ur}{b.lr*(len(str(prid))+longnumlen+1)}{b.ulr}{b.lr*longstrlen}{b.ul}")
+    print(f"{b.dr}{b.lr*(longnumlen+2)}{b.dlr}{b.lr*longstrlen}{b.dl}\n"+output.strip()+f"\n{b.ur}{b.lr*(longnumlen+2)}{b.ulr}{b.lr*longstrlen}{b.ul}")
 
 # Actual program
 # 6533303d
 # {'parsa1': {'name': 'Parsa', 'pass': '1234'}}
 if __name__ == '__main__':
+    text_formatter(39450)
     if appdata_iskeyexist('name'):
         print(f'Hello, {appdata_read("name")}!')
     else:
@@ -189,6 +188,7 @@ if __name__ == '__main__':
                 print("Please put the product id.")
 
         elif c1[:4] == 'info':
+
             if len(c1)>4:
                 pid = int(c1[5:])
                 if pid < len(prd_list):
@@ -197,6 +197,14 @@ if __name__ == '__main__':
                     pdesc   = prd_list[pid]["description"]
                     psellc  = prd_list[pid]["sell_count"]
                     pseller = prd_list[pid]["seller"]
+                    pimg    = prd_list[pid]["imgurl"]
+                    response = requests.get(pimg, timeout=1000)
+                    if response.status_code:
+                        fn = "tmp.png"
+                        with open(fn, 'wb') as fp:
+                            fp.write(response.content)
+                    printimage(fn)
+                    os.remove(fn)
                     print(f"""{b.dr} {pname} {pprice}T
 {b.ud} {pdesc}
 {b.ur} {psellc} times | Seller: {pseller}""")
@@ -238,6 +246,14 @@ if __name__ == '__main__':
                     print("Wrong arg. Try again.")
             else:
                 print("Please put the page number.")
+
+        elif c1 == 'checkout':
+            c2 = input("Are you sure about that(Yes/No)?").lower()
+            if c2 == "yes":
+                # do the checkout proccess
+                for prod_id in appdata_read("buylist"):
+                    d
+                appdata_write("buylist", [])
 
         elif c1[:6] == 'remove':
             if len(c1)>4:
