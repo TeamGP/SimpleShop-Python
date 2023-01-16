@@ -125,7 +125,7 @@ def print_prd(num:int=1, sort:str="", rev_sort:bool=False, count=10) -> str:
 
 # Actual program
 # 6533303d
-# {'parsa1': {'name': 'Parsa', 'pass': '1234'}}
+# {'parsa1': {'name': 'Parsa', 'pass': '1234'} ...}
 if __name__ == '__main__':
     text_formatter(39450)
     if appdata_iskeyexist('name'):
