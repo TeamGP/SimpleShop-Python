@@ -1,20 +1,30 @@
 """ Simple Shop """
-import base64
-import binascii
-import sys
-import os
-from csv import DictReader
-from ast import literal_eval
-import requests
-import climage # pip install climage
-import border as b
-import db
-  
+import base64                     # Encrypting
+import binascii                   # Encrypting
+import sys                        # General
+import os                         # General
+from csv import DictReader,reader # CSV Reader
+from ast import literal_eval      # String dict to Dict
+import requests                   # Getting the image
+import border as b                # local lib for table border
+import db                         # local lib for loading the database
+#try:
+#    import climage
+#except ImportError:
+#os.system("pip3 install climage")
+#os.system("pip3 install texttable")
+from texttable import Texttable   # Print The table
+import climage                    # Print Image in Terminal
+print("Loading...")
 # Default vars
 appdata_path:str = 'data.appdata'
 prdata_path = 'db/products.csv'
 with open(prdata_path, encoding="utf8") as f:
     prd_list = [*DictReader(f)]
+with open(prdata_path, encoding="utf8") as fi:
+    prdlst_list = list(reader(fi))
+for pinfo in prdlst_list:
+    pinfo = pinfo[:2]
 
 # Functions
 def printimage(path):
@@ -97,9 +107,8 @@ def print_prd(num:int=1, sort:str="", rev_sort:bool=False, count=10) -> str:
     else:
         prdlst_cut = prdlist[num*count-count:num*count]
 
-    output:str=''
     longstrlen:int = 0
-    longnumlen:int = 0
+    longnumlen:int = 2
     for l in prdlst_cut:
         name:str = l['name']
         price:str = str(l['price'])
@@ -111,17 +120,19 @@ def print_prd(num:int=1, sort:str="", rev_sort:bool=False, count=10) -> str:
             longnumlen = len(str(prd_list.index(l)))
     longstrlen+=2
 
-    for j in prdlst_cut:
-        name:str = j['name']
-        price:str = str(j['price'])
-        sellcount:str = str(j['sell_count'])
-        prid:str = prd_list.index(j)
-        label = f"{name} {price}T {sellcount}"
-        namelen = longstrlen - len(label) - 2
-        output+=f"\n{b.ud} {prid}{' '*(longnumlen+1-len(str(prid)))}{b.ud} {label} {' '*namelen}{b.ud}\n{b.udr}{b.lr*(longnumlen+2)}{b.udlr}{b.lr*longstrlen}{b.udl}"
-    cutlen = -(len(str(prid)) + longstrlen+6)
-    output=output[:cutlen]
-    print(f"{b.dr}{b.lr*(longnumlen+2)}{b.dlr}{b.lr*longstrlen}{b.dl}\n"+output.strip()+f"\n{b.ur}{b.lr*(longnumlen+2)}{b.ulr}{b.lr*longstrlen}{b.ul}")
+
+    table = Texttable()
+    table.set_deco(Texttable.HEADER)
+    table.set_cols_dtype(['i', 't', 't', 'i'])
+    # 't' = text
+    # 'f' = float (decimal)
+    # 'e' = float (exponent)
+    # 'i' = integer
+    # 'a' = automatic
+
+    table.set_cols_align(["l", "l", "l", "l"])
+    table.add_rows(prdlst_list)
+    print(table.draw())
 
 # Actual program
 # 6533303d
@@ -131,49 +142,54 @@ if __name__ == '__main__':
     if appdata_iskeyexist('name'):
         print(f'Hello, {appdata_read("name")}!')
     else:
-        while True:
-            inpl=input(f"{b.dr} l=Login s=Signup > ").lower()
-            if inpl == "l":
-                lu = input(f'{b.ud} What\'s your username? ')
-                if db.iskeyexist(lu):
-                    lp = input(f'{b.ud} What\'s your password, {lu}? ')
-                    if db.read(lu)['pass'] == lp:
-                        print(f"{b.ur} Correct! Logging in...")
-                        appdata_write('name', db.read(lu)["name"])
-                        appdata_write('username', lu)
-                        appdata_write("buylist", [])
-                        break
-                    print(f'{b.ur} The Password is incorrect.')
-                else:
-                    print(f'{b.ur} The Username is incorrect.')
-            elif inpl == 's':
-                su = input(f'{b.ud} Type your username: ')
-                sp1 = input(f'{b.ud} Type your password: ')
-                sp2 = input(f'{b.ud} Type your password, again: ')
-                if sp1==sp2:
-                    if not db.iskeyexist(su):
-                        sn = input(f'{b.ud} Type your display name: ')
-                        db.write(su, {"name":sn, "pass":sp1})
-                        print(f"{b.ur} Logging in...")
-                        appdata_write('name', sn)
-                        appdata_write('username', su)
-                        appdata_write("buylist", [])
-                        break
-                    print(f'{b.ur} The username is already taken.')
-                else:
-                    print(f'{b.ur} The passwords is not the same.')
-            elif inpl == 'debug':
-                print(literal_eval(dec(read_file(db.db_path))))
+        print("You must login to use some other features!")
 
-            elif inpl == 'e':
-                sys.exit()
-
-    print('Welcome!')
+    print('Welcome!\n To see all commands, type "helpme".')
     print_prd(1)
     while True:
         c1 = input("What to do? ")
 
-        if c1[:3] == 'add':
+        if c1[:3] == 'signup':
+            print('You can exit the login menu by typing "exit".')
+            su = input(f'{b.ud} Type your username: ')
+            sp1 = input(f'{b.ud} Type your password: ')
+            sp2 = input(f'{b.ud} Type your password, again: ')
+            if sp1==sp2:
+                if not db.iskeyexist(su):
+                    sn = input(f'{b.ud} Type your display name: ')
+                    db.write(su, {"name":sn, "pass":sp1})
+                    print(f"{b.ur} Logging in...")
+                    appdata_write('name', sn)
+                    appdata_write('username', su)
+                    appdata_write("buylist", [])
+                    break
+                print(f'{b.ur} The username is already taken.')
+            else:
+                print(f'{b.ur} The passwords is not the same.')
+
+        if c1[:3] == 'login':
+            print('You can exit the login menu by typing "exit" in the "Type your username" section.')
+            while True:
+                    lu = input(f'{b.ud} What\'s your username? ')
+                    
+                    if lu == 'debug':
+                        print(literal_eval(dec(read_file(db.db_path))))
+                        continue
+                    if lu == 'exit':
+                        sys.exit()
+
+                    if db.iskeyexist(lu):
+                        lp = input(f'{b.ud} What\'s your password, {lu}? ')
+                        if db.read(lu)['pass'] == lp:
+                            print(f"{b.ur} Correct! Logging in...")
+                            appdata_write('name', db.read(lu)["name"])
+                            appdata_write('username', lu)
+                            appdata_write("buylist", [])
+                            break
+                        print(f'{b.ur} The Password is incorrect.')
+                    else:
+                        print(f'{b.ur} The Username is incorrect.')
+        elif c1[:3] == 'add':
             if len(c1)>4:
                 pid = int(c1[4:])
                 if pid < len(prd_list):
@@ -247,13 +263,15 @@ if __name__ == '__main__':
             else:
                 print("Please put the page number.")
 
-        elif c1 == 'checkout':
-            c2 = input("Are you sure about that(Yes/No)?").lower()
-            if c2 == "yes":
+        
+        elif c1 == "checkout":
+            print("INCOMPLETE. for now, focusing in other things.")
+            #c2 = input("Are you sure about that(Yes/No)?").lower()
+            #if c2 == "yes":
                 # do the checkout proccess
-                for prod_id in appdata_read("buylist"):
-                    d
-                appdata_write("buylist", [])
+            #    for prod_id in appdata_read("buylist"):
+            #        pass
+            #    appdata_write("buylist", [])
 
         elif c1[:6] == 'remove':
             if len(c1)>4:
@@ -291,14 +309,18 @@ if __name__ == '__main__':
 {b.ud} 
 {b.ud} Command            {b.ud} Description
 {b.udr}{b.lr*20}{b.udlr}{b.lr*45}
+{b.ud} Account Settings:
+{b.ud} login              {b.ud} Login to System.
+{b.ud} signin             {b.ud} Sign in to System.
+{b.ud} logout             {b.ud} Logout from System.
+{b.ud} delacc             {b.ud} Delete the Account from System.
+
+{b.ud} list               {b.ud} Show the Buy list.
 {b.ud} info (prod id)     {b.ud} Show more detail about given product.
 {b.ud} page (page num)    {b.ud} Scrolling through the list of products.
 {b.ud} sort (q) [asc/des] {b.ud} Sort the product list. q=price / sellcount
 {b.ud} add (prod id)      {b.ud} Add a product to Buy list.
 {b.ud} remove (prodid)    {b.ud} Remove a product from Buy list.
-{b.ud} list               {b.ud} Show the Buy list.
-{b.ud} logout             {b.ud} Logout from System.
-{b.ud} delacc             {b.ud} Delete the Account from System.
 {b.ud} exit               {b.ud} Exit from app.
 {b.ur} helpme             {b.ud} Show this thing.
 '''.strip())

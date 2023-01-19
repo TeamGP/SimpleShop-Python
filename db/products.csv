@@ -1,28 +1,28 @@
-name,price,description,sell_count,seller,imgurl
-sib,28000,A delicious fruit,9,Mive va tarebar e Avang,https://storage1.torob.com/backend-api/base/images/hg/xL/hgxL60Lb-mk50wgi.jpg_/0x145.jpg
-medad,15000,Pencil.,7,Lavazem tahrir e mamad,https://storage1.torob.com/backend-api/base/images/Jt/Zc/JtZcmcr7TINA0o3s.jpg_/0x145.jpg
-gheychi,210000,scissors!,16,Bahman chaman zan,https://storage1.torob.com/backend-api/base/images/9a/Nh/9aNhV4xFudFUr1Rc.jpg_/0x145.jpg
-mug,159000,livan but MOHKAM,3,zarf & zorofe mamadi,https://storage1.torob.com/backend-api/base/images/P9/kL/P9kLSbG1HvjuFGeb.jpg_/0x145.jpg
-chips (pringles),74000,chips chasp SOS,46,Super market Arshia,https://storage1.torob.com/backend-api/base/images/gc/QT/gcQT7wjdTwzvnbYg.jpg_/0x145.jpg
-pofak,13500,polimere to por,38,Super market Arshia,https://storage1.torob.com/backend-api/base/images/qu/Py/quPyqApXosMUZADg.jpg_/0x145.jpg
-mohz,75000,khiyare zard,8,Mive va tarebar e Avang,https://storage1.torob.com/backend-api/base/images/uo/kZ/uokZ2dSAU4mU3sNM.jpg_/0x145.jpg
-rob e anar,400000,Torshak level 2,13,Mive va tarebar e Avang,https://storage.torob.com/backend-api/base/images/89/qr/89qrXy2QNByiYlAg.jpg_/0x145.jpg
-narengi,52900,porteghale kochik,0,Mive va tarebar e Avang,https://storage.torob.com/backend-api/base/images/1z/Zt/1zZtQB1dZKHCxPBA.jpg_/0x145.jpg
-ravan nevis,16000,Khodkar lvl 2,18,lavazem tahririye yaser,https://storage1.torob.com/backend-api/base/images/-6/pt/-6pt59Pr9XvTcb0v.jpg_/0x145.jpg
-bastani arosaki,5445,hichvaght mesle coveresh nemishe :(,35,Super market Arshia,https://storage.torob.com/backend-api/base/images/Cw/Y2/CwY2Gmi4FyGJMeq5.jpeg_/0x145.jpg
-dough e ab-ali,14800,gaz dar,21,Super market Arshia,https://storage1.torob.com/backend-api/base/images/cP/Sb/cPSbYNT63g5S9I95.jpeg_/0x145.jpg
-joorab,29000,The best gift for PEDAR day,62,poshake vaziri,https://storage.torob.com/backend-api/base/images/n0/a2/n0a2i1O6m8bvwxUW_/0x145.jpg
-estaminofen,72500,daroo,95,darokhoneye kazemi,https://sinsa.ir/portal/uploads/photos/shares/Drug/Fever/Acetaminophen.jpg
-ghooti noshabe,220000,A delicious drink,4,Super market Arshia,https://storage.torob.com/backend-api/base/images/yt/WJ/ytWJyjrb-fuWdbe-.jpg_/0x145.jpg
-ab 10L,39000,yek galon ab,6,Super market Arshia,https://storage.torob.com/backend-api/base/images/lP/yl/lPylGRkbU1zuBG7_.jpg_/0x145.jpg
-maghze gerdoo,240000,har gerdi gerdoo nist!,0,khoshkijate javiz maviz,https://storage.torob.com/backend-api/base/images/Ez/_X/Ez_XQBPsepv3x-82.jpg_/0x145.jpg
-boros,140000,seramiki do tarafe,5,arayeshe abdi,https://storage1.torob.com/backend-api/base/images/l3/fs/l3fsW2ldamK-G86x.jpg_/0x145.jpg
-chaghoo,15000,FAKE! FOR FUN,67,pedram khatar,https://storage1.torob.com/backend-api/base/images/wV/Za/wVZaDnqx07aGxx38_/0x145.jpg
-taraghe,17000,25 adad,38,pedram khatar,https://storage.torob.com/backend-api/base/images/Qo/S2/QoS27gww5NX24X3U.jpg_/0x145.jpg
-kolah gis,950000,mardane,49,arayeshe abdi,https://storage.torob.com/backend-api/base/images/GX/gy/GXgyZ9cjFDQ2vRPU.jpg_/0x145.jpg
-gamepad xbox s,2150000,Xbox Series S,85,gameclub zafar,https://storage1.torob.com/backend-api/base/images/XS/HB/XSHBBR87EuqNWAhm.jpg_/0x145.jpg
-booghe motor,48000,marke honda flash,16,hasan yadak,https://storage1.torob.com/backend-api/base/images/0o/c_/0oc_bYSRjQ45Ziev_/0x145.jpg
-shir khoshk,39800,400 geram,2,darokhoneye kazemi,https://storage1.torob.com/backend-api/base/images/BY/i_/BYi_zEKMe9lbdbE8.jpg_/0x145.jpg
-kise khab,1590000,modele kale gavi,7,kamran camp,https://storage1.torob.com/backend-api/base/images/zu/sC/zusCToqnWTwAo6ZC.jpg_/0x145.jpg
-chador mosaferati,44722000,4 nafare,17,kamran camp,https://storage.torob.com/backend-api/base/images/CL/6O/CL6OzyK7178kblzB.png_/0x145.jpg
-choobe mahigiri,3110000,ba tajhizate kamel,9,kamran camp,https://storage.torob.com/backend-api/base/images/np/us/npusjE-dP0HxyVDn.jpg_/0x145.jpg
+name,price,sell_count,description,seller,imgurl
+sib,28000,9,A delicious fruit,Mive va tarebar e Avang,https://storage1.torob.com/backend-api/base/images/hg/xL/hgxL60Lb-mk50wgi.jpg_/0x145.jpg
+medad,15000,7,Pencil.,Lavazem tahrir e mamad,https://storage1.torob.com/backend-api/base/images/Jt/Zc/JtZcmcr7TINA0o3s.jpg_/0x145.jpg
+gheychi,210000,16,scissors!,Bahman chaman zan,https://storage1.torob.com/backend-api/base/images/9a/Nh/9aNhV4xFudFUr1Rc.jpg_/0x145.jpg
+mug,159000,3,livan but MOHKAM,zarf & zorofe mamadi,https://storage1.torob.com/backend-api/base/images/P9/kL/P9kLSbG1HvjuFGeb.jpg_/0x145.jpg
+chips (pringles),74000,46,chips chasp SOS,Super market Arshia,https://storage1.torob.com/backend-api/base/images/gc/QT/gcQT7wjdTwzvnbYg.jpg_/0x145.jpg
+pofak,13500,38,polimere to por,Super market Arshia,https://storage1.torob.com/backend-api/base/images/qu/Py/quPyqApXosMUZADg.jpg_/0x145.jpg
+mohz,75000,8,khiyare zard,Mive va tarebar e Avang,https://storage1.torob.com/backend-api/base/images/uo/kZ/uokZ2dSAU4mU3sNM.jpg_/0x145.jpg
+rob e anar,400000,13,Torshak level 2,Mive va tarebar e Avang,https://storage.torob.com/backend-api/base/images/89/qr/89qrXy2QNByiYlAg.jpg_/0x145.jpg
+narengi,52900,0,porteghale kochik,Mive va tarebar e Avang,https://storage.torob.com/backend-api/base/images/1z/Zt/1zZtQB1dZKHCxPBA.jpg_/0x145.jpg
+ravan nevis,16000,18,Khodkar lvl 2,lavazem tahririye yaser,https://storage1.torob.com/backend-api/base/images/-6/pt/-6pt59Pr9XvTcb0v.jpg_/0x145.jpg
+bastani arosaki,5445,35,hichvaght mesle coveresh nemishe :(,Super market Arshia,https://storage.torob.com/backend-api/base/images/Cw/Y2/CwY2Gmi4FyGJMeq5.jpeg_/0x145.jpg
+dough e ab-ali,14800,21,gaz dar,Super market Arshia,https://storage1.torob.com/backend-api/base/images/cP/Sb/cPSbYNT63g5S9I95.jpeg_/0x145.jpg
+joorab,29000,62,The best gift for PEDAR day,poshake vaziri,https://storage.torob.com/backend-api/base/images/n0/a2/n0a2i1O6m8bvwxUW_/0x145.jpg
+estaminofen,72500,95,daroo,darokhoneye kazemi,https://sinsa.ir/portal/uploads/photos/shares/Drug/Fever/Acetaminophen.jpg
+ghooti noshabe,220000,4,A delicious drink,Super market Arshia,https://storage.torob.com/backend-api/base/images/yt/WJ/ytWJyjrb-fuWdbe-.jpg_/0x145.jpg
+ab 10L,39000,6,yek galon ab,Super market Arshia,https://storage.torob.com/backend-api/base/images/lP/yl/lPylGRkbU1zuBG7_.jpg_/0x145.jpg
+maghze gerdoo,240000,0,har gerdi gerdoo nist!,khoshkijate javiz maviz,https://storage.torob.com/backend-api/base/images/Ez/_X/Ez_XQBPsepv3x-82.jpg_/0x145.jpg
+boros,140000,5,seramiki do tarafe,arayeshe abdi,https://storage1.torob.com/backend-api/base/images/l3/fs/l3fsW2ldamK-G86x.jpg_/0x145.jpg
+chaghoo,15000,67,FAKE! FOR FUN,pedram khatar,https://storage1.torob.com/backend-api/base/images/wV/Za/wVZaDnqx07aGxx38_/0x145.jpg
+taraghe,17000,38,25 adad,pedram khatar,https://storage.torob.com/backend-api/base/images/Qo/S2/QoS27gww5NX24X3U.jpg_/0x145.jpg
+kolah gis,950000,49,mardane,arayeshe abdi,https://storage.torob.com/backend-api/base/images/GX/gy/GXgyZ9cjFDQ2vRPU.jpg_/0x145.jpg
+gamepad xbox s,2150000,85,Xbox Series S,gameclub zafar,https://storage1.torob.com/backend-api/base/images/XS/HB/XSHBBR87EuqNWAhm.jpg_/0x145.jpg
+booghe motor,48000,16,marke honda flash,hasan yadak,https://storage1.torob.com/backend-api/base/images/0o/c_/0oc_bYSRjQ45Ziev_/0x145.jpg
+shir khoshk,39800,2,400 geram,darokhoneye kazemi,https://storage1.torob.com/backend-api/base/images/BY/i_/BYi_zEKMe9lbdbE8.jpg_/0x145.jpg
+kise khab,1590000,7,modele kale gavi,kamran camp,https://storage1.torob.com/backend-api/base/images/zu/sC/zusCToqnWTwAo6ZC.jpg_/0x145.jpg
+chador mosaferati,44722000,17,4 nafare,kamran camp,https://storage.torob.com/backend-api/base/images/CL/6O/CL6OzyK7178kblzB.png_/0x145.jpg
+choobe mahigiri,3110000,9,ba tajhizate kamel,kamran camp,https://storage.torob.com/backend-api/base/images/np/us/npusjE-dP0HxyVDn.jpg_/0x145.jpg
