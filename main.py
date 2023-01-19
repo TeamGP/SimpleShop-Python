@@ -16,15 +16,24 @@ import db                         # local lib for loading the database
 from texttable import Texttable   # Print The table
 import climage                    # Print Image in Terminal
 print("Loading...")
+
 # Default vars
 appdata_path:str = 'data.appdata'
 prdata_path = 'db/products.csv'
+
 with open(prdata_path, encoding="utf8") as f:
     prd_list = [*DictReader(f)]
 with open(prdata_path, encoding="utf8") as fi:
-    prdlst_list = list(reader(fi))
-for pinfo in prdlst_list:
-    pinfo = pinfo[:2]
+    prdlist_lstInFor = list(reader(fi))
+
+numb=0
+prdlist_lst=[]
+prdlist_lstInFor = prdlist_lstInFor[1:]
+for pinfo in prdlist_lstInFor:
+    ls=[numb]
+    ls.extend(pinfo[:3])
+    prdlist_lst.append(ls)
+    numb+=1
 
 # Functions
 def printimage(path):
@@ -81,45 +90,33 @@ def appdata_read(key:str) -> str:
     write_file(appdata_path, str(enc(str(data)))[2:-1])
     return data[key]
 
-def text_formatter(digit:int) -> str:
-    """ something """
-    print(len(str(digit))//3)
-
-def print_prd(num:int=1, sort:str="", rev_sort:bool=False, count=10) -> str:
+def print_prd(num:int=1, sort:str="", rev_sort:bool=False, count=10):
     """ prints the products list """
     if num > (len(prd_list)//count):
         print('The page number is too large.')
         return
 
-    if sort == "":
-        prdlist = prd_list[:]
+        prdlist_lst_IntPrice=prdlist_lst[:]
+        for ilst in prdlist_lst:
+            lstt=[]
+            lstt.extend(ilst)
+            ilst[2]=int(ilst[2])
+            prdlist_lst.append(lstt)
+            
+    if sort == "price":
+        prdlist_sorted = sorted(prdlist_lst, key=lambda d: d[2], reverse=rev_sort) 
 
+    elif sort in("sell count", "sellcount"):
+        prdlist_sorted = sorted(prdlist_lst, key=lambda d: d[3], reverse=rev_sort) 
     else:
-        if sort == "price":
-            prdlist = sorted(prd_list, key=lambda d: d['price'], reverse=rev_sort) 
+        prdlist_sorted = prdlist_lst[:]
 
-        elif sort in("sell count", "sellcount"):
-            prdlist = sorted(prd_list, key=lambda d: d['sell_count'], reverse=rev_sort) 
-        
+    prdlist_sorted.insert(0,["ID", "Name", "Price", "Sell Count"])
 
     if len(prd_list) < count:
-        prdlst_cut = prdlist[:]
+        prdlst_cut = prdlist_sorted[:]
     else:
-        prdlst_cut = prdlist[num*count-count:num*count]
-
-    longstrlen:int = 0
-    longnumlen:int = 2
-    for l in prdlst_cut:
-        name:str = l['name']
-        price:str = str(l['price'])
-        sellcount:str = str(l['sell_count'])
-        label = f"{name} {price}T {sellcount}"
-        if len(label) > longstrlen:
-            longstrlen = len(label)
-        if len(str(prd_list.index(l))) > longnumlen:
-            longnumlen = len(str(prd_list.index(l)))
-    longstrlen+=2
-
+        prdlst_cut = prdlist_sorted[num*count-count:num*count]
 
     table = Texttable()
     table.set_deco(Texttable.HEADER)
@@ -131,14 +128,13 @@ def print_prd(num:int=1, sort:str="", rev_sort:bool=False, count=10) -> str:
     # 'a' = automatic
 
     table.set_cols_align(["l", "l", "l", "l"])
-    table.add_rows(prdlst_list)
-    print(table.draw())
-
+    table.add_rows(prdlst_cut)
+    print("\n"+table.draw()+"\n")
+print("=== === === === ===")
 # Actual program
 # 6533303d
 # {'parsa1': {'name': 'Parsa', 'pass': '1234'} ...}
 if __name__ == '__main__':
-    text_formatter(39450)
     if appdata_iskeyexist('name'):
         print(f'Hello, {appdata_read("name")}!')
     else:
