@@ -96,27 +96,42 @@ def print_prd(num:int=1, sort:str="", rev_sort:bool=False, count=10):
         print('The page number is too large.')
         return
 
+    if sort=="":
+        prdlist_sorted=prdlist_lst[:]
+    else:
         prdlist_lst_IntPrice=prdlist_lst[:]
         for ilst in prdlist_lst:
             lstt=[]
             lstt.extend(ilst)
             ilst[2]=int(ilst[2])
-            prdlist_lst.append(lstt)
-            
-    if sort == "price":
-        prdlist_sorted = sorted(prdlist_lst, key=lambda d: d[2], reverse=rev_sort) 
+            ilst[3]=int(ilst[3])
+            prdlist_lst_IntPrice.append(lstt)
 
-    elif sort in("sell count", "sellcount"):
-        prdlist_sorted = sorted(prdlist_lst, key=lambda d: d[3], reverse=rev_sort) 
-    else:
-        prdlist_sorted = prdlist_lst[:]
+        if sort == "price":
+            plip_for=sorted(prdlist_lst_IntPrice, key=lambda d: d[2], reverse=rev_sort)
+            plip=[]
+            for il in plip_for:
+                listt=[]
+                listt.extend(il)
+                il[2]=str(il[2])
+                il[3]=str(il[3])
+                plip.append(listt)
+            prdlist_sorted=plip[:]
+        
+        elif sort in("sell count", "sellcount"):
+            prdlist_sorted = sorted(prdlist_lst_IntPrice, key=lambda d: d[3], reverse=rev_sort) 
+        else:
+            prdlist_sorted = prdlist_lst[:]
+
 
     prdlist_sorted.insert(0,["ID", "Name", "Price", "Sell Count"])
 
     if len(prd_list) < count:
         prdlst_cut = prdlist_sorted[:]
     else:
-        prdlst_cut = prdlist_sorted[num*count-count:num*count]
+        prdlst_cut = prdlist_sorted[num*count-count : num*count]
+
+    print("Page "+str(num)+"\n=== === === === ===")
 
     table = Texttable()
     table.set_deco(Texttable.HEADER)
@@ -130,6 +145,7 @@ def print_prd(num:int=1, sort:str="", rev_sort:bool=False, count=10):
     table.set_cols_align(["l", "l", "l", "l"])
     table.add_rows(prdlst_cut)
     print("\n"+table.draw()+"\n")
+
 print("=== === === === ===")
 # Actual program
 # 6533303d
@@ -145,6 +161,7 @@ if __name__ == '__main__':
     while True:
         c1 = input("What to do? ")
 
+        #@signup command
         if c1[:3] == 'signup':
             print('You can exit the login menu by typing "exit".')
             su = input(f'{b.ud} Type your username: ')
@@ -163,6 +180,7 @@ if __name__ == '__main__':
             else:
                 print(f'{b.ur} The passwords is not the same.')
 
+        #@login command
         if c1[:3] == 'login':
             print('You can exit the login menu by typing "exit" in the "Type your username" section.')
             while True:
@@ -185,6 +203,8 @@ if __name__ == '__main__':
                         print(f'{b.ur} The Password is incorrect.')
                     else:
                         print(f'{b.ur} The Username is incorrect.')
+        
+        #@add command
         elif c1[:3] == 'add':
             if len(c1)>4:
                 pid = int(c1[4:])
@@ -199,6 +219,7 @@ if __name__ == '__main__':
             else:
                 print("Please put the product id.")
 
+        #@info command
         elif c1[:4] == 'info':
 
             if len(c1)>4:
@@ -217,16 +238,15 @@ if __name__ == '__main__':
                             fp.write(response.content)
                     printimage(fn)
                     os.remove(fn)
-                    print(f"""{b.dr} {pname} {pprice}T
-{b.ud} {pdesc}
-{b.ur} {psellc} times | Seller: {pseller}""")
+                    print(f"""{b.dr} {pname} {pprice}T\n\n{b.ud} {pdesc}\n{b.ur} {psellc} times | Seller: {pseller}""")
 
                 else:
                     print("Wrong Id. Try again.")
             else:
                 print("Please type the product id.")
 
-        elif c1[:4] == 'list':
+        #@buylist command
+        elif c1[:4] == 'buylist' or c1[:4] == 'buy list' or c1[:4] == 'buy-list' or c1[:4] == 'buy_list':
             buylst = appdata_read("buylist")
             o:str=''
             a:str=0
@@ -236,13 +256,16 @@ if __name__ == '__main__':
             print(o.strip())
             print(f"The sum of all products: {a}")
 
+        #@page command
         elif c1[:4] == 'page':
             if len(c1)>4:
                 print_prd(int(c1[5:]))
             else:
                 print("Please put the page number.")
 
+        #@sort command
         elif c1[:4] == 'sort':
+            print("EXPERIMENTAL FEATURE!!")
             if len(c1)>4:
                 args = c1.split()
                 if len(args) == 2:
@@ -259,7 +282,7 @@ if __name__ == '__main__':
             else:
                 print("Please put the page number.")
 
-        
+        #@checkout command
         elif c1 == "checkout":
             print("INCOMPLETE. for now, focusing in other things.")
             #c2 = input("Are you sure about that(Yes/No)?").lower()
@@ -269,6 +292,7 @@ if __name__ == '__main__':
             #        pass
             #    appdata_write("buylist", [])
 
+        #@remove command
         elif c1[:6] == 'remove':
             if len(c1)>4:
                 pid = int(c1[7:])
@@ -283,11 +307,13 @@ if __name__ == '__main__':
             else:
                 print("Please put the product id.")
 
+        #@logout command
         elif c1 == "logout":
             appdata_rem("name")
             appdata_rem("buylist")
             sys.exit()
 
+        #@delacc command
         elif c1 == "delacc":
             if input("Are you sure about that? (y, n)").lower() == 'y':
                 db.rem(appdata_read("username"))
@@ -296,9 +322,11 @@ if __name__ == '__main__':
                 appdata_rem("buylist")
                 sys.exit()
 
+        #@exit command
         elif c1 == "exit":
             sys.exit()
 
+        #@helpme command
         elif c1 == "helpme":
             print(f'''
 {b.dr} command (required) [additional]
@@ -311,7 +339,7 @@ if __name__ == '__main__':
 {b.ud} logout             {b.ud} Logout from System.
 {b.ud} delacc             {b.ud} Delete the Account from System.
 
-{b.ud} list               {b.ud} Show the Buy list.
+{b.ud} buylist            {b.ud} Show the Buy list.
 {b.ud} info (prod id)     {b.ud} Show more detail about given product.
 {b.ud} page (page num)    {b.ud} Scrolling through the list of products.
 {b.ud} sort (q) [asc/des] {b.ud} Sort the product list. q=price / sellcount
