@@ -99,17 +99,17 @@ def print_prd(num:int=1, sort:str="", rev_sort:bool=False, count=10):
     if sort=="":
         prdlist_sorted=prdlist_lst[:]
     else:
-        prdlist_lst_IntPrice=prdlist_lst[:]
+        '''prdlist_lst_IntPrice=prdlist_lst[:]
         for ilst in prdlist_lst:
             lstt=[]
             lstt.extend(ilst)
             ilst[2]=int(ilst[2])
             ilst[3]=int(ilst[3])
-            prdlist_lst_IntPrice.append(lstt)
+            prdlist_lst_IntPrice.append(lstt)'''
 
         if sort == "price":
-            '''plip_for=sorted(prdlist_lst, key=lambda d: int(d[2]), reverse=rev_sort)
-            plip=[]
+            prdlist_sorted = sorted(prdlist_lst, key=lambda d: int(d[2]), reverse=rev_sort)
+            '''plip=[]
             for il in plip_for:
                 listt=[]
                 listt.extend(il)
@@ -119,14 +119,14 @@ def print_prd(num:int=1, sort:str="", rev_sort:bool=False, count=10):
             prdlist_sorted=plip[:]'''
         
         elif sort in("sell count", "sellcount"):
-            prdlist_sorted = sorted(prdlist_lst_IntPrice, key=lambda d: d[3], reverse=rev_sort) 
+            prdlist_sorted = sorted(prdlist_lst_IntPrice, key=lambda d: int(d[3]), reverse=rev_sort) 
         else:
             prdlist_sorted = prdlist_lst[:]
 
     if len(prd_list) < count:
-        prdlst_cut = prdlist_lst[:]
+        prdlst_cut = prdlist_sorted[:]
     else:
-        prdlst_cut = prdlist_lst[num*count-count : num*count]
+        prdlst_cut = prdlist_sorted[num*count-count : num*count]
 
     prdlst_cut.insert(0,["ID", "Name", "Price", "Sell Count"])
 
