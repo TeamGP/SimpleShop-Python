@@ -108,7 +108,7 @@ def print_prd(num:int=1, sort:str="", rev_sort:bool=False, count=10):
             prdlist_lst_IntPrice.append(lstt)
 
         if sort == "price":
-            plip_for=sorted(prdlist_lst_IntPrice, key=lambda d: d[2], reverse=rev_sort)
+            '''plip_for=sorted(prdlist_lst, key=lambda d: int(d[2]), reverse=rev_sort)
             plip=[]
             for il in plip_for:
                 listt=[]
@@ -116,20 +116,19 @@ def print_prd(num:int=1, sort:str="", rev_sort:bool=False, count=10):
                 il[2]=str(il[2])
                 il[3]=str(il[3])
                 plip.append(listt)
-            prdlist_sorted=plip[:]
+            prdlist_sorted=plip[:]'''
         
         elif sort in("sell count", "sellcount"):
             prdlist_sorted = sorted(prdlist_lst_IntPrice, key=lambda d: d[3], reverse=rev_sort) 
         else:
             prdlist_sorted = prdlist_lst[:]
 
-
-    prdlist_sorted.insert(0,["ID", "Name", "Price", "Sell Count"])
-
     if len(prd_list) < count:
-        prdlst_cut = prdlist_sorted[:]
+        prdlst_cut = prdlist_lst[:]
     else:
-        prdlst_cut = prdlist_sorted[num*count-count : num*count]
+        prdlst_cut = prdlist_lst[num*count-count : num*count]
+
+    prdlst_cut.insert(0,["ID", "Name", "Price", "Sell Count"])
 
     print("Page "+str(num)+"\n=== === === === ===")
 
