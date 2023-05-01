@@ -1,21 +1,22 @@
 """ Simple Shop """
-import base64                     # Encrypting
-import binascii                   # Encrypting
-import sys                        # General
-import os                         # General
-from csv import DictReader,reader # CSV Reader
-from ast import literal_eval      # String dict to Dict
-import random as rand             # To generate the terminal code for payment
-import webbrowser as wb           # open the checkout page
-import requests                   # Getting the image
-import border as b                # local lib for table border
-import db                         # local lib for loading the database
-from texttable import Texttable   # Print The table
-import climage                    # Print Image in Terminal
+from sys import exit as safeExit   # General
+from os import path as fpath       # if File is exists
+from os import remove as fremove   # Remove a file
+from csv import DictReader,reader  # CSV Reader
+from ast import literal_eval       # String dict to Dict
+import random as rand              # To generate the terminal code for payment
+import webbrowser as wb            # open the checkout page
+from requests import get           # Getting the image
+import border as b                 # local lib for table border
+import db                          # local lib for loading the database
+from texttable import Texttable    # Print The table
+from climage import convert as i2t # Print Image in Terminal
+import pickle                      # Load and save file config     
 print("Loading...")
 
 # Default vars
 appdata_path:str = 'data.appdata'
+pickle_path = "data.pickle"
 prdata_path = 'db/products.csv'
 
 with open(prdata_path, encoding="utf8") as f:
@@ -32,60 +33,61 @@ for pinfo in prdlist_lstInFor:
     prdlist_lst.append(ls)
     numb+=1
 
+# Classes
+class File:
+    def __init__(self, path):
+        self.path = path
+    @property
+    def content(self):
+        with open(self.path, "r", encoding='utf8') as f:
+            return f.read()
+    @content.setter
+    def content(self, new_content):
+        with open(self.path, "w", encoding='utf8') as f:
+            return f.write(new_content)
+
+class Appdata:
+    def __init__(self, path):
+        if not fpath.isfile(pickle_path):
+            with open(pickle_path, 'wb') as f:
+                return pickle.dump({}, f, pickle.HIGHEST_PROTOCOL)
+        self.path = path
+
+    @property
+    def content(self):
+        with open(pickle_path, 'rb') as f:
+            return pickle.load(f)
+
+    @content.setter
+    def content(self, new_content):
+        with open(pickle_path, 'wb') as f:
+            return pickle.dump(new_content, f, pickle.HIGHEST_PROTOCOL)
+    
+    def isKeyExists(self, key):
+        with open(pickle_path, 'rb') as f:
+            loaded_data = pickle.load(f)
+            if isinstance(loaded_data, dict):
+                return key in loaded_data.keys()
+            else:
+                raise TypeError(f"The data is not \"dict\", it\'s {type(loaded_data)}")
+
+    def getKey(self, key):
+        return self.content[key]
+
+    def setKey(self, key, value):
+        data:dict = self.content
+        data[key] = value
+        self.content = data
+
+    def remKey(self, key):
+        data:dict = self.content
+        data.pop(key)
+        self.content = data
+
 # Functions
 def printimage(path):
-    ''' converts the image to print in terminal
-     inform of ANSI Escape codes '''
+    ''' converts the image to print in terminal\n inform of ANSI Escape codes '''
     print(climage.convert(path, is_256color=True))
-
-def enc(text:str) -> str:
-    """ Encode the given text to base64 """
-    # https://www.scopulus.co.uk/tools/hexconverter.htm
-    # convert to BASE64
-    b64_bytes = base64.b64encode(text.encode('ascii'))
-    # convert to HEX-ASCII and return the result
-    return binascii.hexlify(b64_bytes.decode('ascii').encode())
-
-def dec(text:str) -> str:
-    """ Encode the given text to base64 """
-    hex_bytes = bytearray.fromhex(text).decode()
-    return base64.b64decode(hex_bytes).decode()
-
-def read_file(path:str) -> str:
-    """ Read and return the file text """
-    with open(path, encoding='utf8') as file:
-        return file.read()
-
-def write_file(path:str, text:str) -> int:
-    """ Write text to the given file """
-    with open(path, 'w', encoding='utf8') as file:
-        return file.write(text)
-
-def appdata_iskeyexist(key:str) -> bool:
-    """ Check if key is in appdata """
-    file = read_file(appdata_path)
-    data:dict = literal_eval(dec(file))
-    return key in data.keys()
-
-def appdata_write(key:str, value:str) -> None:
-    """ Write value from appdata """
-    file = read_file(appdata_path)
-    data:dict = literal_eval(dec(file))
-    data[key] = value
-    write_file(appdata_path, str(enc(str(data)))[2:-1])
-
-def appdata_rem(key:str) -> None:
-    """ Remove value from appdata """
-    file = read_file(appdata_path)
-    data:dict = literal_eval(dec(file))
-    data.pop(key)
-    write_file(appdata_path, str(enc(str(data)))[2:-1])
-
-def appdata_read(key:str) -> str:
-    """ Read value from appdata """
-    data = literal_eval(dec(read_file(appdata_path)))
-    write_file(appdata_path, str(enc(str(data)))[2:-1])
-    return data[key]
 
 def print_prd(num:int=1, sort:str="", rev_sort:bool=False, count=10):
     """ prints the products list """
@@ -130,8 +132,9 @@ print("=== === === === ===")
 # 6533303d
 # {'parsa1': {'name': 'Parsa', 'pass': '1234'} ...}
 if __name__ == '__main__':
-    if appdata_iskeyexist('name'):
-        print(f'Hello, {appdata_read("name")}!')
+    appdata = Appdata(pickle_path)
+    if appdata.isKeyExists('name'):
+        print(f'Hello, {appdata.getKey("name")}!')
     else:
         print("You must login to use some other features!")
 
@@ -145,9 +148,9 @@ if __name__ == '__main__':
             if len(c1)>4:
                 pid = int(c1[4:])
                 if pid < len(prd_list):
-                    buylst:dict = appdata_read("buylist")
+                    buylst:dict = appdata.getKey("buylist")
                     buylst.append(pid)
-                    appdata_write("buylist", buylst)
+                    appdata.setKey("buylist", buylst)
                     pname = prd_list[pid]["name"]
                     print(f"The {pname} has successfully added.")
                 else:
@@ -169,13 +172,13 @@ if __name__ == '__main__':
                     psellc  = prd_list[pid]["sell_count"]
                     pseller = prd_list[pid]["seller"]
                     pimg    = prd_list[pid]["imgurl"]
-                    response = requests.get(pimg, timeout=1000)
+                    response = get(pimg, timeout=1000)
                     if response.status_code:
                         fn = "tmp.png"
                         with open(fn, 'wb') as fp:
                             fp.write(response.content)
                     printimage(fn)
-                    os.remove(fn)
+                    fremove(fn)
                     print(f"""{b.dr} {pname} {pprice}T\n\n{b.ud} {pdesc}\n{b.ur} {psellc} times | Seller: {pseller}""")
 
                 else:
@@ -187,11 +190,11 @@ if __name__ == '__main__':
 
         #@buylist command
         elif c1[:7] == 'buylist' or c1[:8] == 'buy list' or c1[:8] == 'buy-list' or c1[:8] == 'buy_list':
-            if not appdata_iskeyexist('name'):
+            if not appdata.isKeyExists('name'):
                 print("You must login to use this feature!")
                 continue
 
-            buylst = appdata_read("buylist")
+            buylst = appdata.getKey("buylist")
             o:str=''
             a:str=0
             for i in buylst:
@@ -246,7 +249,7 @@ if __name__ == '__main__':
             if c2 == "yes":
                 terminal=rand.randint(1000000, 9999999)
 
-                buylst:list = appdata_read("buylist")
+                buylst:list = appdata.getKey("buylist")
                 all_price=0
                 for i in buylst:
                     all_price+=int(prd_list[i]["price"])
@@ -256,28 +259,28 @@ if __name__ == '__main__':
                 checkout_completed=False
 
                 while not checkout_completed:
-                    requ=requests.get(f"http://localhost/payment/status/{terminal}", timeout=5)
+                    requ=get(f"http://localhost/payment/status/{terminal}", timeout=5)
                     if requ.status_code==200:
                         if requ.text=="true":
                             checkout_completed=True
                 
                 if checkout_completed:
-                    appdata_write("buylist", [])
+                    appdata.setKey("buylist", [])
                     print("Payment was successful!")
                 else:
                     print("You canceled the payment!")
 
         #@remove command
         elif c1[:6] == 'remove':
-            if not appdata_iskeyexist('name'):
+            if not appdata.isKeyExists('name'):
                 print("You must login to use this feature!")
 
             if len(c1)>4:
                 pid = int(c1[7:])
-                buylst:dict = appdata_read("buylist")
+                buylst:dict = appdata.getKey("buylist")
                 if pid in buylst:
                     buylst.remove(pid)
-                    appdata_write("buylist", buylst)
+                    appdata.setKey("buylist", buylst)
                     pname = prd_list[pid]["name"]
                     print(f"The {pname} has successfully removed.")
                 else:
@@ -289,7 +292,7 @@ if __name__ == '__main__':
 
         #@login command
         elif c1 == 'login':
-            if appdata_iskeyexist("name"):
+            if appdata.isKeyExists("name"):
                 print("You are already logged in to the system. you don\'t need to login again.")
                 continue
             print('You can exit the login menu by typing "exit" in the "What\'s your username" section.')
@@ -298,18 +301,19 @@ if __name__ == '__main__':
                     lu = input(f'{b.ud} What\'s your username? ')
                     
                     if lu == 'debug':
-                        print(literal_eval(dec(read_file(db.db_path))))
+                        _ = File(db.db_path)
+                        print(literal_eval(dec(_.content)))
                         continue
                     if lu == 'exit':
-                        sys.exit()
+                        safeExit()
 
                     if db.iskeyexist(lu):
                         lp = input(f'{b.ud} What\'s your password, {lu}? ')
                         if db.read(lu)['pass'] == lp:
                             print(f"{b.ur} Correct! Logging in...")
-                            appdata_write('name', db.read(lu)["name"])
-                            appdata_write('username', lu)
-                            appdata_write("buylist", [])
+                            appdata.setKey('name', db.read(lu)["name"])
+                            appdata.setKey('username', lu)
+                            appdata.setKey("buylist", [])
                             break
                         print(f'{b.ur} The Password is incorrect.')
                         continue
@@ -318,7 +322,7 @@ if __name__ == '__main__':
 
         #@signup command
         elif c1 == 'signup':
-            if not appdata_iskeyexist("name"):
+            if not appdata.isKeyExists("name"):
                 print("You are already logged in to the system. you don\'t need to login again.")
                 continue
             print('You can exit the login menu by typing "exit" in the "What\'s your username" section.')
@@ -331,9 +335,9 @@ if __name__ == '__main__':
                     sn = input(f'{b.ud} Type your display name: ')
                     db.write(su, {"name":sn, "pass":sp1})
                     print(f"{b.ur} Signed up! Logging in...")
-                    appdata_write('name', sn)
-                    appdata_write('username', su)
-                    appdata_write("buylist", [])
+                    appdata.setKey('name', sn)
+                    appdata.setKey('username', su)
+                    appdata.setKey("buylist", [])
                     break
                 print(f'{b.ur} The username is already taken.')
                 continue
@@ -342,33 +346,33 @@ if __name__ == '__main__':
 
         #@logout command
         elif c1 == "logout":
-            if not appdata_iskeyexist('name'):
+            if not appdata.isKeyExists('name'):
                 print("You must login to use this feature!")
 
             if input("Are you sure about that? (y,n)").lower() == 'y':
-                appdata_rem("name")
-                appdata_rem("username")
-                appdata_rem("buylist")
-                sys.exit()
+                appdata.remKey("name")
+                appdata.remKey("username")
+                appdata.remKey("buylist")
+                safeExit()
             else:
                 continue
 
         #@delacc command
         elif c1 == "delacc":
-            if not appdata_iskeyexist('name'):
+            if not appdata.isKeyExists('name'):
                 print("You must login to use this feature!")
 
             if input("Are you sure about that? (y,n)").lower() == 'y':
-                db.rem(appdata_read("username"))
-                appdata_rem("name")
-                appdata_rem("username")
-                appdata_rem("buylist")
-                sys.exit()
+                db.rem(appdata.getKey("username"))
+                appdata.remKey("name")
+                appdata.remKey("username")
+                appdata.remKey("buylist")
+                safeExit()
             continue
 
         #@exit command
         elif c1 == "exit":
-            sys.exit()
+            safeExit()
 
         #@helpme command
         elif c1 == "helpme":
