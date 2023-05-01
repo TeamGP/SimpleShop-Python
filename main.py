@@ -11,7 +11,7 @@ import border as b                 # local lib for table border
 import db                          # local lib for loading the database
 from texttable import Texttable    # Print The table
 from climage import convert as i2t # Print Image in Terminal
-import pickle                      # Load and save file config     
+import pickle                      # Load and save file config 
 print("Loading...")
 
 # Default vars
@@ -87,7 +87,7 @@ class Appdata:
 # Functions
 def printimage(path):
     ''' converts the image to print in terminal\n inform of ANSI Escape codes '''
-    print(climage.convert(path, is_256color=True))
+    print(i2t(path, is_256color=True))
 
 def print_prd(num:int=1, sort:str="", rev_sort:bool=False, count=10):
     """ prints the products list """
@@ -112,7 +112,7 @@ def print_prd(num:int=1, sort:str="", rev_sort:bool=False, count=10):
 
     prdlst_cut.insert(0,["ID", "Name", "Price", "Sell Count"])
 
-    print("Page "+str(num)+"\n=== === === === ===")
+    print("\n=== === === === ===\nPage "+str(num))
 
     table = Texttable()
     table.set_deco(Texttable.HEADER)
@@ -129,8 +129,6 @@ def print_prd(num:int=1, sort:str="", rev_sort:bool=False, count=10):
 
 print("=== === === === ===")
 # Actual program
-# 6533303d
-# {'parsa1': {'name': 'Parsa', 'pass': '1234'} ...}
 if __name__ == '__main__':
     appdata = Appdata(pickle_path)
     if appdata.isKeyExists('name'):
@@ -392,7 +390,7 @@ if __name__ == '__main__':
 {b.ud} page (page num)                 {b.ud} Scrolling through the list of products.
 {b.ud} sort (q) [asc/des] [PageNumber] {b.ud} Sort the product list. q=price / sellcount
 {b.ud} add (prod id)*                  {b.ud} Add a product to Buy list.
-{b.ud} remove (prod id)*                {b.ud} Remove a product from Buy list.
+{b.ud} remove (prod id)*               {b.ud} Remove a product from Buy list.
 {b.ud} exit                            {b.ud} Exit from app.
 {b.ur} helpme                          {b.ud} Show this thing.
 '''.strip())
